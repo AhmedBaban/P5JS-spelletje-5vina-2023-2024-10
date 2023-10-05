@@ -26,31 +26,32 @@ function draw() {
   if (keyIsDown(DOWN_ARROW)) {
     yJager += 5;
   }
-  if (keyIsDown(LEFT_ARROW)) {
+  if (keyIsDown(65)) {
     xProoi -= 5;
   }
-  if (keyIsDown(RIGHT_ARROW)) {
+  if (keyIsDown(68)) {
     xProoi += 5;
   }
-  if (keyIsDown(UP_ARROW)) {
+  if (keyIsDown(87)) {
     yProoi -= 5;
   }
-  if (keyIsDown(65)) {
+  if (keyIsDown(83)) {
     yProoi += 5;
   }
 
   xJager = constrain(xJager,0,width - 100);
   yJager = constrain(yJager,0,height - 100);
-  xProoi = constrain(xJager,0,width - 100);
-  yProoi = constrain(yJager,0,height - 100);
+  xProoi = constrain(xProoi,0,width - 75);
+  yProoi = constrain(yProoi,0,height - 50);
 
-  if (xJager >= 700 && xJager <= 875 && yJager >= 75 && yJager <= 225) {
+  if (xJager >= xProoi - 100 && xJager <= xProoi + 75 && yJager >= yProoi - 100 && yJager <= yProoi + 50) {
     fill('chartreuse');
+    eindScherm();
   }
   else {
     fill('darkkhaki');
   }
-  rect(800,175,75,50);
+  rect(xProoi,yProoi,75,50);
   fill('moccasin');
   rect(xJager,yJager,100,100);   
 }
