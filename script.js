@@ -15,7 +15,15 @@ class Raster {
     stroke('grey');
     for (var rij = 0;rij < this.aantalRijen;rij++) {
       for (var kolom = 0;kolom < this.aantalKolommen;kolom++) {
-        rect(kolom*this.celGrootte,rij*this.celGrootte,this.celGrootte,this.celGrootte);
+        rect(kolom*this.celGrootte,rij*this.celGrootte,
+            this.celGrootte,this.celGrootte);
+        
+        if (rij == 5 || kolom == 5) {
+          fill('orange'); 
+          rect(kolom * this.celGrootte, 
+               rij * this.celGrootte, this.celGrootte, this.celGrootte);
+          noFill();
+       }
       }
     }
     pop();
@@ -33,19 +41,19 @@ class Jos {
   }
   
   beweeg() {
-    if (keyIsDown(LEFT_ARROW)) {
+    if (keyIsDown(65)) {
       this.x -= this.stapGrootte;
       this.frameNummer = 2;
     }
-    if (keyIsDown(RIGHT_ARROW)) {
+    if (keyIsDown(68)) {
       this.x += this.stapGrootte;
       this.frameNummer = 1;
     }
-    if (keyIsDown(UP_ARROW)) {
+    if (keyIsDown(87)) {
       this.y -= this.stapGrootte;
       this.frameNummer = 4;
     }
-    if (keyIsDown(DOWN_ARROW)) {
+    if (keyIsDown(83)) {
       this.y += this.stapGrootte;
       this.frameNummer = 5;
     }
@@ -93,6 +101,31 @@ class Vijand {
   }
 }
 
+class Bom {
+  constructor(grootteStap, x, y){
+    this.x = x;
+    this.y = y;
+    this.grootteStap = grootteStap;
+    this.snelheid = 1;
+  }
+
+}
+
+class Appel {
+  constructor() {
+    this.x = random(width) ; 
+    this.y = random(height) ;
+    this.diameter = 20;
+  }
+
+  toon() {
+    fill('red');
+    ellipse(this.x, this.y, this.diameter, this.diameter);
+  }
+}
+
+
+  
 function preload() {
   brug = loadImage("images/backgrounds/dame_op_brug_1800.jpg");
 }
@@ -104,7 +137,7 @@ function setup() {
   textFont("Verdana");
   textSize(90);
   
-  raster = new Raster(6,9);
+  raster = new Raster(12,18);
   
   raster.berekenCelGrootte();
   
@@ -121,8 +154,16 @@ function setup() {
 
   bob = new Vijand(600,400);
   bob.stapGrootte = 1*eve.stapGrootte;
-  bob.sprite = loadImage("images/sprites/Bob100px/Bob.png");  
+  bob.sprite = loadImage("images/sprites/Bob100px/Bob.png"); 
+
+  let appel;
+
+  function setup() {
+
+    Appel = new Appel();
+  }
 }
+
 
 function draw() {
   background(brug);
@@ -133,6 +174,8 @@ function draw() {
   eve.toon();
   alice.toon();
   bob.toon();
+
+  Appel.toon();
   
   if (eve.wordtGeraakt(alice) || eve.wordtGeraakt(bob)) {
     noLoop();
@@ -144,4 +187,4 @@ function draw() {
     text("Je hebt gewonnen!",30,300);
     noLoop();
   }
-}sfsfsdsd
+}
