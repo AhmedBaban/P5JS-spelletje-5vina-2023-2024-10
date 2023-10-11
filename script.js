@@ -20,12 +20,11 @@ class Raster {
         
         if (rij == 5 || kolom == 5) {
           fill('orange'); 
-          rect(kolom * this.celGrootte, 
-               rij * this.celGrootte, this.celGrootte, this.celGrootte);
+          rect(kolom * this.celGrootte, rij * this.celGrootte, this.celGrootte, this.celGrootte);
           noFill();
        }
       }
-    }
+    }  
     pop();
   }
 }
@@ -109,6 +108,10 @@ class Bom {
     this.snelheid = 1;
   }
 
+  beweeg() {
+    
+  }
+
 }
 
 class Appel {
@@ -119,8 +122,7 @@ class Appel {
   }
 
   toon() {
-    fill('red');
-    ellipse(this.x, this.y, this.diameter, this.diameter);
+    image(this.sprite,this.x,this.y,raster.celGrootte,raster.celGrootte);
   }
 }
 
@@ -157,11 +159,8 @@ function setup() {
   bob.sprite = loadImage("images/sprites/Bob100px/Bob.png"); 
 
   let appel;
-
-  function setup() {
-
-    Appel = new Appel();
-  }
+  Appel = new Appel();
+  Appel.sprite = loadImage("images/sprites/appel_1.png");
 }
 
 

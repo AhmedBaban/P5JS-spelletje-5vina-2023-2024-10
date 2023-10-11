@@ -4,7 +4,7 @@ var xProoi = 800;
 var yProoi = 175;
 
 function setup() {
-  canvas = createCanvas(1000,400);
+  canvas = createCanvas(1000, 400);
   canvas.parent();
   textFont("Verdana");
   textSize(140);
@@ -39,10 +39,10 @@ function draw() {
     yProoi += 5;
   }
 
-  xJager = constrain(xJager,0,width - 100);
-  yJager = constrain(yJager,0,height - 100);
-  xProoi = constrain(xProoi,0,width - 75);
-  yProoi = constrain(yProoi,0,height - 50);
+  xJager = constrain(xJager, 0, width - 100);
+  yJager = constrain(yJager, 0, height - 100);
+  xProoi = constrain(xProoi, 0, width - 75);
+  yProoi = constrain(yProoi, 0, height - 50);
 
   if (xJager >= xProoi - 100 && xJager <= xProoi + 75 && yJager >= yProoi - 100 && yJager <= yProoi + 50) {
     fill('chartreuse');
@@ -51,14 +51,14 @@ function draw() {
   else {
     fill('darkkhaki');
   }
-  rect(xProoi,yProoi,75,50);
+  rect(xProoi, yProoi, 75, 50);
   fill('moccasin');
-  rect(xJager,yJager,100,100);   
+  rect(xJager, yJager, 100, 100);
 }
 
 function eindScherm() {
   background('white');
   fill('black');
-  text("GEVANGEN!",75,250);
+  text("GEVANGEN!", 75, 250);
   noLoop();
 }
