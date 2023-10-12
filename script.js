@@ -105,26 +105,44 @@ class Bom {
     this.x = x;
     this.y = y;
     this.grootteStap = grootteStap;
-    this.snelheid = 1;
-  }
+    this.snelheid = 1.5;
+  }  
 
   beweeg() {
-    
+    this.x = 600
+    this.y = floor(random(0,raster.aantalRijen))*raster.celGrootte + 4;
+
+    this.x = constrain(this.x,0,canvas.width - raster.celGrootte);
+    this.y = constrain(this.y,0,canvas.height - raster.celGrootte);
+  }
+  toon() {
+    image(this.sprite,this.x,this.y,raster.celGrootte ,raster.celGrootte ); 
   }
 
 }
 
 class Appel {
   constructor() {
-    this.x = random(width) ; 
-    this.y = random(height) ;
-    this.diameter = 20;
+    this.x = floor(random(1,raster.aantalKolommen))*raster.celGrootte + 5;
+    this.y = floor(random(0,raster.aantalRijen))*raster.celGrootte + 4;
   }
 
   toon() {
-    image(this.sprite,this.x,this.y,raster.celGrootte,raster.celGrootte);
+    image(this.sprite,this.x,this.y,raster.celGrootte - 10,raster.celGrootte - 10); 
   }
+
+raakJos (jos) {
+  const afstand = dist(this.x, this.y, jos.x, jos.y);
+  if (afstand < jos.stapGrootte / 2) {
+    this.x = floor(random(1, raster.aantalKolommen)) * raster.celGrootte + 5;
+    this.y = floor(random(0, raster.aantalRijen)) * raster.celGrootte + 4;
+    return true;
+   }
+  return false;
+ }
+
 }
+
 
 
   
@@ -158,9 +176,11 @@ function setup() {
   bob.stapGrootte = 1*eve.stapGrootte;
   bob.sprite = loadImage("images/sprites/Bob100px/Bob.png"); 
 
-  let appel;
   Appel = new Appel();
   Appel.sprite = loadImage("images/sprites/appel_1.png");
+
+  Bom = new Bom();
+  Bom.sprite = loadImage("images/sprites/bom.png")
 }
 
 
@@ -173,10 +193,14 @@ function draw() {
   eve.toon();
   alice.toon();
   bob.toon();
-
   Appel.toon();
+  Bom.toon();
+  Bom.beweeg();
   
   if (eve.wordtGeraakt(alice) || eve.wordtGeraakt(bob)) {
+    background('red');
+    fill('white');
+    text("Helaas je hebt verloren!",30,300);
     noLoop();
   }
   
@@ -186,4 +210,5 @@ function draw() {
     text("Je hebt gewonnen!",30,300);
     noLoop();
   }
-}
+  }
+
