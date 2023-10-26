@@ -1,3 +1,5 @@
+var levens = 2;
+
 class Raster {
   constructor(r,k) {
     this.aantalRijen = r;
@@ -18,7 +20,7 @@ class Raster {
         rect(kolom*this.celGrootte,rij*this.celGrootte,
             this.celGrootte,this.celGrootte);
         
-        if (rij == 5 || kolom == 5) {
+        if (rij == 5 || kolom == 5) {    
           fill('orange'); 
           rect(kolom * this.celGrootte, rij * this.celGrootte, this.celGrootte, this.celGrootte);
           noFill();
@@ -29,6 +31,7 @@ class Raster {
   }
 }
 
+
 class Jos {
   constructor() {
     this.x = 400;
@@ -37,6 +40,17 @@ class Jos {
     this.frameNummer =  3;
     this.stapGrootte = null;
     this.gehaald = false;
+  }
+  
+  eetAppel(appel) {
+    const afstand = dist(this.x, this.y, appel.x, appel.y);
+    if (afstand < this.stapGrootte / 2) {
+      appel.verplaats();
+      levens++; 
+    
+      return true;  
+    }
+    return false;
   }
   
   beweeg() {
@@ -100,26 +114,38 @@ class Vijand {
   }
 }
 
+const bommen = [];
+
 class Bom {
   constructor(grootteStap, x, y){
     this.x = x;
     this.y = y;
     this.grootteStap = grootteStap;
-    this.snelheid = 1.5;
+    this.snelheid = 6.5;
+    this.omhoog = true;
+    this.sprite = null;
   }  
 
   beweeg() {
-    this.x = 600
-    this.y = floor(random(0,raster.aantalRijen))*raster.celGrootte + 4;
+    if (this.omhoog) {
+      this.y -= this.snelheid;
+    } else {
+      this.y += this.snelheid;
+    }
 
-    this.x = constrain(this.x,0,canvas.width - raster.celGrootte);
-    this.y = constrain(this.y,0,canvas.height - raster.celGrootte);
-  }
+    if (this.y <= 0) {
+      this.omhoog = false;
+    } else if (this.y >= canvas.height - raster.celGrootte) {
+      this.omhoog = true;
+    }
+  }     
   toon() {
     image(this.sprite,this.x,this.y,raster.celGrootte ,raster.celGrootte ); 
   }
-
 }
+
+
+
 
 class Appel {
   constructor() {
@@ -128,9 +154,14 @@ class Appel {
   }
 
   toon() {
-    image(this.sprite,this.x,this.y,raster.celGrootte - 10,raster.celGrootte - 10); 
+    image(this.sprite,this.x,this.y,raster.celGrootte - 10,raster.celGrootte - 10);   
   }
 
+  verplaats() {
+  this.x = 900
+  this.y = floor(random(0, raster.aantalRijen - 1)) * raster.celGrootte + 4;
+  }
+  
 raakJos (jos) {
   const afstand = dist(this.x, this.y, jos.x, jos.y);
   if (afstand < jos.stapGrootte / 2) {
@@ -145,7 +176,6 @@ raakJos (jos) {
 
 
 
-  
 function preload() {
   brug = loadImage("images/backgrounds/dame_op_brug_1800.jpg");
 }
@@ -179,8 +209,10 @@ function setup() {
   Appel = new Appel();
   Appel.sprite = loadImage("images/sprites/appel_1.png");
 
-  Bom = new Bom();
+  Bom = new Bom(raster.celGrootte, 600, floor(random(0, raster.aantalRijen)) * raster.celGrootte + 4);
   Bom.sprite = loadImage("images/sprites/bom.png")
+
+
 }
 
 
@@ -196,19 +228,33 @@ function draw() {
   Appel.toon();
   Bom.toon();
   Bom.beweeg();
+
+  fill("black");
+  textSize(24);
+  text("Levens: " + levens, 30, 30);
   
   if (eve.wordtGeraakt(alice) || eve.wordtGeraakt(bob)) {
-    background('red');
-    fill('white');
-    text("Helaas je hebt verloren!",30,300);
-    noLoop();
+    if (levens >= 1) {
+      levens--;
+    } else { 
+      background('red');
+      fill('white');
+      textSize(80);
+      text("Helaas", 300, 250); 
+      text("je hebt verloren", 130, 350); 
+      noLoop();
+    }
   }
   
   if (eve.gehaald) {
     background('green');
-    fill('white');
-    text("Je hebt gewonnen!",30,300);
+    fill('white'); 
+    textSize(80);
+    text("Gefeliciteerd", 220,250); 
+    text("je hebt gewonnen!", 110,340); 
     noLoop();
-  }
-  }
-
+   }
+  
+  if (eve.eetAppel(Appel)) {
+    }  
+}  
