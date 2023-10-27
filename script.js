@@ -1,5 +1,7 @@
 var levens = 2;
 var kolommenMetBom = [];
+var spelActief = true;
+
 
 class Raster {
   constructor(r,k) {
@@ -197,14 +199,6 @@ raakJos (jos) {
 }
 
 
-function toonEindScherm() {
-  background('red');
-    fill('white');
-    textSize(80);
-    text("Helaas", 300, 250); 
-    text("je hebt verloren", 130, 350); 
-}  
-
 function preload() {
   brug = loadImage("images/backgrounds/dame_op_brug_1800.jpg");
 }
@@ -264,13 +258,15 @@ function setup() {
 function draw() {
   background(brug);
   raster.teken();
-  eve.beweeg();
-  alice.beweeg();
-  bob.beweeg();
-  eve.toon();
-  alice.toon();
-  bob.toon();
-  Appel.toon();
+
+  if (spelActief) {
+    eve.beweeg();
+    alice.beweeg();
+    bob.beweeg();
+    eve.toon();
+    alice.toon();
+    bob.toon();
+    Appel.toon();
   
   for (var i = 0; i < bommenLijst.length; i++) {
     var bom = bommenLijst[i];
@@ -278,6 +274,13 @@ function draw() {
     bom.toon();
     
     if (bom.wordtGeraakt(eve)) {
+      if (levens > 0) {
+        levens - 1;
+      }
+      else { 
+        spelActief = false; 
+      }
+     }
     }
     
   }
@@ -289,15 +292,10 @@ function draw() {
   text("Levens: " + levens, 30, 30);
   
   if (eve.wordtGeraakt(alice) || eve.wordtGeraakt(bob)) {
-    if (levens > 2) {
+    if (levens > 1) {
       levens--;
     } else { 
-      background('red');
-      fill('white');
-      textSize(80);
-      text("Helaas", 300, 250); 
-      text("je hebt verloren", 130, 350); 
-      noLoop();
+      spelActief = false;
     }
   }
   
@@ -305,10 +303,18 @@ function draw() {
     background('green');
     fill('white'); 
     textSize(80);
-    text("Gefeliciteerd", 220,250); 
-    text("je hebt gewonnen!", 110,340); 
+    text("Gefeliciteerd", 210,250); 
+    text("je hebt gewonnen!", 100,340); 
     noLoop();
    }
+  
+  if (!spelActief) {
+    background('red');
+    fill('white');
+    textSize(80);
+    text("Helaas", 300, 250);
+    text("je hebt verloren", 130, 350);
+  }
   
   if (eve.eetAppel(Appel)) {
     }  
