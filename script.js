@@ -1,4 +1,5 @@
 var levens = 2;
+var kolommenMetBom = [];
 
 class Raster {
   constructor(r,k) {
@@ -40,6 +41,7 @@ class Jos {
     this.frameNummer =  3;
     this.stapGrootte = null;
     this.gehaald = false;
+    this.staOpBom = false;
   }
   
   eetAppel(appel) {
@@ -88,6 +90,7 @@ class Jos {
     }
   }
   
+
   toon() {
     image(this.animatie[this.frameNummer],this.x,this.y,raster.celGrootte,raster.celGrootte);
   }
@@ -114,14 +117,14 @@ class Vijand {
   }
 }
 
-const bommen = [];
+
 
 class Bom {
-  constructor(grootteStap, x, y){
+  constructor(grootteStap, x, y,snelheid){
     this.x = x;
     this.y = y;
     this.grootteStap = grootteStap;
-    this.snelheid = 6.5;
+    this.snelheid = snelheid;
     this.omhoog = true;
     this.sprite = null;
   }  
@@ -140,11 +143,30 @@ class Bom {
     }
   }     
   toon() {
-    image(this.sprite,this.x,this.y,raster.celGrootte ,raster.celGrootte ); 
+    image(this.sprite,this.x,this.y,raster.celGrootte ,raster.celGrootte); 
+  }
+
+  wordtGeraakt(jos) {
+    const afstand = dist(this.x, this.y, jos.x, jos.y);
+    if (afstand < jos.stapGrootte / 2) {
+      levens--;
+      this.reset();
+      return true;
+    }
+    return false;
+  }
+
+  reset() {
+    var kolom;
+    do {
+      kolom = floor(random(raster.aantalKolommen / 2, raster.aantalKolommen - 1));
+    } while (kolommenMetBom.includes(kolom));
+    kolommenMetBom.push(kolom);
+
+    this.x = kolom * raster.celGrootte + 5;
+    this.y = floor(random(0, raster.aantalRijen)) * raster.celGrootte + 4;
   }
 }
-
-
 
 
 class Appel {
@@ -175,6 +197,13 @@ raakJos (jos) {
 }
 
 
+function toonEindScherm() {
+  background('red');
+    fill('white');
+    textSize(80);
+    text("Helaas", 300, 250); 
+    text("je hebt verloren", 130, 350); 
+}  
 
 function preload() {
   brug = loadImage("images/backgrounds/dame_op_brug_1800.jpg");
@@ -209,11 +238,27 @@ function setup() {
   Appel = new Appel();
   Appel.sprite = loadImage("images/sprites/appel_1.png");
 
-  Bom = new Bom(raster.celGrootte, 600, floor(random(0, raster.aantalRijen)) * raster.celGrootte + 4);
-  Bom.sprite = loadImage("images/sprites/bom.png")
 
+  bommenLijst = [];
+  
+  for (var i = 0; i < 5; i++) {
+    var kolom;
+    do {
+      kolom = floor(random(raster.aantalKolommen / 2, raster.aantalKolommen - 1));
+    } while (kolommenMetBom.includes(kolom)); 
+    kolommenMetBom.push(kolom);
 
-}
+    var x = kolom * raster.celGrootte + 5;
+    var y = floor(random(0, raster.aantalRijen)) * raster.celGrootte + 4;
+    var snelheid = random(10, 20);
+    var bom = new Bom(raster.celGrootte, x, y, snelheid);
+    bom.sprite = loadImage("images/sprites/bom.png");
+    bommenLijst.push(bom);
+  }
+
+  }
+  
+
 
 
 function draw() {
@@ -226,15 +271,25 @@ function draw() {
   alice.toon();
   bob.toon();
   Appel.toon();
-  Bom.toon();
-  Bom.beweeg();
+  
+  for (var i = 0; i < bommenLijst.length; i++) {
+    var bom = bommenLijst[i];
+    bom.beweeg();
+    bom.toon();
+    
+    if (bom.wordtGeraakt(eve)) {
+    }
+    
+  }
 
+
+  
   fill("black");
   textSize(24);
   text("Levens: " + levens, 30, 30);
   
   if (eve.wordtGeraakt(alice) || eve.wordtGeraakt(bob)) {
-    if (levens >= 1) {
+    if (levens > 2) {
       levens--;
     } else { 
       background('red');
@@ -257,4 +312,4 @@ function draw() {
   
   if (eve.eetAppel(Appel)) {
     }  
-}  
+}   
